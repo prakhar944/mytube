@@ -148,7 +148,8 @@ const publishAVideo = asyncHandler(async (req, res) => {
             title: title.trim(),
             description: description.trim(),
             duration: videoFile.duration,
-            isPublished: true
+            isPublished: true,
+            owner: req.user._id
         })
 
         if (!video) {
@@ -233,11 +234,11 @@ const updateVideo = asyncHandler(async (req, res) => {
     const {title, description} = req.body
     //TODO: update video details like title, description, thumbnail
 
-    if(mongoose.isValidObjectId(videoId)){
+    if(!mongoose.isValidObjectId(videoId)){
         throw new ApiError( 400, " Invalid Video ID !!")
     }
 
-    const video = Video.findOne({
+    const video = await Video.findOne({
         owner: req.user._id,
         _id: videoId
     })
@@ -299,7 +300,7 @@ const deleteVideo = asyncHandler(async (req, res) => {
     .json(
         new ApiResponse(
             201,
-            {},
+            {video},
             " Video Deleted Successfully "
         )
     )
@@ -323,7 +324,7 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
 
     video.isPublished = !video.isPublished
 
-    await Video.save();
+    await video.save();
 
     return res
     .status(201)

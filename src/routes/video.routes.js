@@ -30,7 +30,7 @@ router
     publishAVideo
 )
 
-router.route("/:videoId")
+router.route("/:videoId") 
 .get(getVideoById)
 .delete(deleteVideo)
 .patch(upload.single("thumbnail"), updateVideo)

@@ -138,7 +138,7 @@ const loginUser = asyncHandler( async (req,res) => {
                      {
                         user: loggedInUser,accessToken,refreshToken
                      },
-                     "UserLogged In Successfully"
+                     "User Logged In Successfully"
                   )
                )
 
@@ -344,7 +344,7 @@ const updateUserCoverImage = asyncHandler( async (req, res) => {
    .json(
       new ApiResponse(
       200,
-      channel[0],
+      user,
       "Cover Image Updated Successfully"
       )
    )

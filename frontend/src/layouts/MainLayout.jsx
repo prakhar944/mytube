@@ -1,36 +1,40 @@
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
-import Navbar from "../components/Navbar.jsx";
-import Sidebar from "../components/Sidebar.jsx";
-import "./MainLayout.css"
 
+import Navbar from "../components/Navbar";
+import Sidebar from "../components/Sidebar";
 
-function MainLayout(){
-    const [sidebarOpen, setrSidebarOpen] = useState(true);
+import "./MainLayout.css";
 
-    const toggleSidebar = ()=>{
-        setrSidebarOpen((prev) => !prev);
-    }
+function MainLayout() {
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
-    const closeSidebar = ()=>{
-        setrSidebarOpen(false)
-    }
+  const toggleSidebar = () => {
+    setSidebarOpen((prev) => !prev);
+  };
 
-    return (
-        <div className="app-layout">
-            <Navbar onMenuClick={toggleSidebar} />
-            
-            <Sidebar
-            isOpen={sidebarOpen}
-            OnClose={closeSidebar}
-            />
+  const closeSidebar = () => {
+    setSidebarOpen(false);
+  };
 
-            <main 
-            className= {`main-content ${sidebarOpen? "sidebar-open" : "sidebar-closed"}`} >
-                <Outlet />
-            </main>
-        </div>
-    );
+  return (
+    <div className="app-layout">
+      <Navbar onMenuClick={toggleSidebar} />
+
+      <Sidebar
+        isOpen={sidebarOpen}
+        onClose={closeSidebar}
+      />
+
+      <main
+        className={`main-content ${
+          sidebarOpen ? "sidebar-open" : "sidebar-closed"
+        }`}
+      >
+        <Outlet />
+      </main>
+    </div>
+  );
 }
 
 export default MainLayout;

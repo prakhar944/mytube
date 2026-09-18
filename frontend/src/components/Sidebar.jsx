@@ -13,10 +13,12 @@ import {
     Heart,
     Stethoscope,
     HomeIcon,
+    X,
 } from "lucide-react"
+
 import "./Sidebar.css"
 
-function Sidebar({isOpen,OnClose}){
+function Sidebar({isOpen,onClose}){
     const mainItems = [
         {
             name: "Home",
@@ -101,7 +103,7 @@ function Sidebar({isOpen,OnClose}){
 
     const renderItems = (items) => {
         return items.map((item) => {
-            const Iccon = item.icon;
+            const Icon = item.icon;
 
             return (
                 <NavLink 

@@ -1,7 +1,7 @@
 .navbar{
     height: 64px;
     width: 100%;
-    background-color: #0f0f0f;
+    background-color: #1e453e;
     border-bottom:1px solid #272727;
     
     display: flex;
@@ -48,7 +48,7 @@
 }
 
 .logo-icon{
-    background-color: #2A835F;
+    background-color: #212926;
     color: #F8EBAB;
     width: 42px;
     height: 32px;
@@ -60,6 +60,7 @@
 }
 .logo-text{
     letter-spacing: -1px;
+    color: 	#ff8503;
 }
 
 /*  Search  */
@@ -160,25 +161,27 @@
  /* Right */
 
  .navbar-right{
-    min-height: 60px;
+    /* min-height: 60px; */
+    padding: 10px 8px;
     display: flex;
     justify-content: flex-end;
-    background-color: 	#8c873e;
-    border-radius: 20px;
+    border: 1px solid #303030;
+    background-color: 	#06768d;
+    border-radius: 16px;
  }
 
  .login-btn{
     display: flex;
     align-items: center;
     gap: 7px;
-    border: 1px solid #303030;
-    border-radius: 20px;
-    padding: 8px 14px;
-    color: #970c05;
+    
+   
+    /* padding: 8px 8px; */
+    color: 	white;
     font-size: 14px;
  }
- .login-btn:hover{
-    background-color: 	#59551d;
+ .navbar-right:hover{
+    background-color: #003747;
  }
 
  /* Mobile */

@@ -12,7 +12,6 @@ import {
     Upload,
     Heart,
     Stethoscope,
-    HomeIcon,
     X,
 } from "lucide-react"
 

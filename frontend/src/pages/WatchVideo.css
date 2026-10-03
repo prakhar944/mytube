@@ -1,0 +1,215 @@
+.watch-page {
+    width: 100%;
+    min-height: 100%;
+    padding: 28px 32px 48px;
+    color: #f5f7f6;
+}
+
+.watch-container {
+    width: min(100%, 1080px);
+    margin: 0 auto;
+}
+
+.watch-player {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #090d0b;
+    border-radius: 8px;
+    object-fit: contain;
+}
+
+.watch-title {
+    margin: 18px 0 16px;
+    color: #f5f7f6;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+}
+
+.watch-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 14px 0;
+    border-bottom: 1px solid #355047;
+}
+
+.watch-channel {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 12px;
+}
+
+.channel-avatar {
+    display: grid;
+    width: 44px;
+    height: 44px;
+    flex: 0 0 44px;
+    place-items: center;
+    border-radius: 50%;
+    background: #79b6a1;
+    color: #10251e;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.watch-channel h3 {
+    overflow: hidden;
+    color: #f5f7f6;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.35;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.watch-channel p {
+    margin-top: 3px;
+    color: #a9bdb5;
+    font-size: 13px;
+}
+
+.action-buttons {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 10px;
+}
+
+.action-buttons button {
+    display: inline-flex;
+    min-height: 40px;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 0 16px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background-color 150ms ease, border-color 150ms ease, transform 120ms ease;
+}
+
+.action-buttons button:active {
+    transform: translateY(1px);
+}
+
+.subscribe-button {
+    background: #d2eee2;
+    color: #16372b;
+}
+
+.subscribe-button:hover {
+    background: #bce2d1;
+}
+
+.like-button {
+    border-color: #47665a !important;
+    background: #243c32;
+    color: #eef5f1;
+}
+
+.like-button:hover {
+    background: #315044;
+}
+
+.video-description {
+    margin-top: 18px;
+    padding: 16px;
+    border-radius: 6px;
+    background: #223a31;
+    color: #dce8e2;
+    font-size: 14px;
+    line-height: 1.65;
+    overflow-wrap: anywhere;
+}
+
+.video-views {
+    margin-bottom: 8px;
+    color: #f5f7f6;
+    font-weight: 600;
+}
+
+.watch-message {
+    display: flex;
+    min-height: min(60vh, 520px);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 24px;
+    color: #b7c9c1;
+    text-align: center;
+}
+
+.watch-message h2 {
+    color: #f5f7f6;
+    font-size: 22px;
+}
+
+.watch-message button {
+    min-height: 40px;
+    margin-top: 8px;
+    padding: 0 18px;
+    border: 0;
+    border-radius: 6px;
+    background: #d2eee2;
+    color: #16372b;
+    font-weight: 600;
+    transition: background-color 150ms ease;
+}
+
+.watch-message button:hover {
+    background: #bce2d1;
+}
+
+@media (max-width: 700px) {
+    .watch-page {
+        padding: 18px 16px 32px;
+    }
+
+    .watch-player {
+        border-radius: 4px;
+    }
+
+    .watch-title {
+        margin: 14px 0 10px;
+        font-size: 20px;
+    }
+
+    .watch-actions {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .action-buttons {
+        width: 100%;
+    }
+
+    .action-buttons button {
+        flex: 1;
+    }
+
+    .video-description {
+        margin-top: 14px;
+        padding: 13px;
+    }
+}
+
+@media (max-width: 380px) {
+    .watch-page {
+        padding-right: 12px;
+        padding-left: 12px;
+    }
+
+    .action-buttons button {
+        gap: 6px;
+        padding: 0 10px;
+        font-size: 13px;
+    }
+}

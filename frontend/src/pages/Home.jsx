@@ -15,7 +15,7 @@ function Home(){
             setLoading(true);
             setError("")
 
-            const response = await axios.get(`${import.meta.enx.VITE_APP_URL}/videos/`)
+            const response = await axios.get(`${import.meta.env.VITE_APP_URL}/videos/`)
 
             const videoData = response.data?.data?.docs || response.data?.data || [];
 

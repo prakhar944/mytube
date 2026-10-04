@@ -13,15 +13,26 @@ function WatchVideo(){
     const [ loading, setLoading ] = useState(true);
     const [ error, setError ] = useState("");
 
+    const [liked, setLiked] = useState(false);
+    const [likeLoading, setLikeLoading] = useState(false);
+
+
     const fetchVideo = async () => {
         try {
             setLoading(true);
             setError("");
-            const response = await axios.get(
-                `${import.meta.env.VITE_APP_URL}/api/v1/videos/${videoId}`
-            );
 
-            console.log("Video Response: ",response.data );
+            const token = localStorage.getItem("accessToken")
+            
+
+            const response = await axios.get(
+                `${import.meta.env.VITE_API_URL}/videos/${videoId}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
             
             setVideo(response.data?.data);
         }
@@ -33,8 +44,33 @@ function WatchVideo(){
         }
     };
 
+    const handleLike = async () => {
+  try {
+    setLikeLoading(true);
+
+    const token = localStorage.getItem("accessToken");
+
+    await axios.post(
+      `${import.meta.env.VITE_API_URL}/likes/video/${videoId}`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    setLiked((prev) => !prev);
+  } catch (error) {
+    console.error("Error toggling like:", error);
+  } finally {
+    setLikeLoading(false);
+  }
+    };   
+
     useEffect( () => {
         fetchVideo();
+        
     }, [videoId] );
 
     if(loading){
@@ -91,9 +127,18 @@ function WatchVideo(){
                             Subscribe
                         </button>
                         
-                        <button className="like-button">
-                            <ThumbsUp size={19} />
-                            Like
+                <button
+                  className={`like-button ${liked ? "liked" : ""}`}
+                  onClick={handleLike}
+                  disabled={likeLoading}
+                    >
+                  <ThumbsUp size={18} />
+
+                  {likeLoading
+                    ? "Loading..."
+                    : liked
+                    ? "Liked"
+                    : "Like"}
                         </button>
                     </div>
                 </div>

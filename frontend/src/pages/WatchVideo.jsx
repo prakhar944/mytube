@@ -16,6 +16,9 @@ function WatchVideo(){
     const [liked, setLiked] = useState(false);
     const [likeLoading, setLikeLoading] = useState(false);
 
+    const [subscribed, setSubscribed] = useState(false);
+    const [subscribeLoading, setSubscribeLoading] = useState(false);
+
 
     const fetchVideo = async () => {
         try {
@@ -67,6 +70,35 @@ function WatchVideo(){
     setLikeLoading(false);
   }
     };   
+
+    const handleSubscribe = async () => {
+      try {
+        setSubscribeLoading(true);
+
+        const token = localStorage.getItem("accessToken");
+
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_URL}/subscriptions/channel/${video.owner._id}`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        console.log("Subscription response:", response.data);
+
+        setSubscribed((prev) => !prev);
+      } catch (error) {
+        console.error(
+          "Error toggling subscription:",
+          error.response?.data || error
+        );
+      } finally {
+        setSubscribeLoading(false);
+      }
+    };
 
     useEffect( () => {
         fetchVideo();
@@ -122,9 +154,20 @@ function WatchVideo(){
                     </div>
 
                     <div className="action-buttons">
-                        <button className="subscribe-button">
-                            <Bell size={19} />
-                            Subscribe
+                        <button
+                          className={`subscribe-button ${
+                            subscribed ? "subscribed" : ""
+                          }`}
+                          onClick={handleSubscribe}
+                          disabled={subscribeLoading}
+                        >
+                          <Bell size={18} />
+                      
+                          {subscribeLoading
+                            ? "Loading..."
+                            : subscribed
+                            ? "Subscribed"
+                            : "Subscribe"}
                         </button>
                         
                 <button

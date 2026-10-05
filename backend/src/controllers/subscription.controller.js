@@ -13,7 +13,7 @@ const toggleSubscription = asyncHandler(async (req, res) => {
         throw new ApiError(400, " Invalid Channel Id !!")
     }
 
-    const channel = await Subscription.findById(channelId)
+    const channel = await User.findById(channelId)
     if (!channel) {
         throw new ApiError( 404, " Channel not found")
     }

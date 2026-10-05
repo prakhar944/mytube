@@ -99,13 +99,24 @@
 }
 
 .subscribe-button {
-    background: #d2eee2;
+    background: #f3f7f5;
     color: #16372b;
 }
 
 .subscribe-button:hover {
     background: #bce2d1;
 }
+
+.subscribe-button.subscribed {
+  background-color: #c30a0a;
+  color: white;
+}
+
+.subscribe-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 
 .like-button {
     border-color: #47665a !important;
@@ -118,7 +129,7 @@
 }
 
 .like-button.liked {
-  background-color: #ffffff;
+  background-color: #04648a;
   color: #000000;
 }
 

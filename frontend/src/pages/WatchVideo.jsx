@@ -19,6 +19,10 @@ function WatchVideo(){
     const [subscribed, setSubscribed] = useState(false);
     const [subscribeLoading, setSubscribeLoading] = useState(false);
 
+    const [comments, setComments] = useState([]);
+    const [commentText, setCommentText] = useState("");
+    const [commentLoading, setCommentLoading] = useState(false);
+
 
     const fetchVideo = async () => {
         try {
@@ -100,10 +104,65 @@ function WatchVideo(){
       }
     };
 
-    useEffect( () => {
-        fetchVideo();
-        
-    }, [videoId] );
+    const fetchComments = async () => {
+      try {
+        const token = localStorage.getItem("accessToken");
+      
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/comments/${videoId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+      
+        setComments(
+          response.data?.data?.docs ||
+          response.data?.data ||
+          []
+        );
+      } catch (error) {
+        console.error("Error fetching comments:", error);
+      }
+    };
+
+    const handleAddComment = async (e) => {
+      e.preventDefault();
+
+      if (!commentText.trim()) return;
+
+      try {
+        setCommentLoading(true);
+      
+        const token = localStorage.getItem("accessToken");
+      
+        await axios.post(
+          `${import.meta.env.VITE_API_URL}/comments/${videoId}`,
+          {
+            content: commentText,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+      
+        setCommentText("");
+      
+        await fetchComments();
+      } catch (error) {
+        console.error("Error adding comment:", error);
+      } finally {
+        setCommentLoading(false);
+      }
+    };
+
+        useEffect(() => {
+      fetchVideo();
+      fetchComments();
+          }, [videoId]);
 
     if(loading){
         return (
@@ -195,6 +254,63 @@ function WatchVideo(){
                         {video.description || "No description Available"}
                     </p>
                 </div>
+
+                      <div className="comments-section">
+          <h2>Comments</h2>
+
+          <form
+            className="comment-form"
+            onSubmit={handleAddComment}
+          >
+            <input
+              type="text"
+              value={commentText}
+              onChange={(e) =>
+                setCommentText(e.target.value)
+              }
+              placeholder="Add a comment..."
+            />
+
+            <button
+              type="submit"
+              disabled={
+                commentLoading || !commentText.trim()
+              }
+            >
+              {commentLoading ? "Posting..." : "Comment"}
+            </button>
+          </form>
+            
+          <div className="comments-list">
+            {comments.length > 0 ? (
+              comments.map((comment) => (
+                <div
+                  className="comment-card"
+                  key={comment._id}
+                >
+                  <div className="comment-avatar">
+                    {comment.owner?.fullName
+                      ?.charAt(0)
+                      ?.toUpperCase() || "U"}
+                  </div>
+                    
+                  <div className="comment-content">
+                    <h4>
+                      {comment.owner?.fullName ||
+                        "User"}
+                    </h4>
+                      
+                    <p>{comment.content}</p>
+                  </div>
+                </div>
+      ))
+    ) : (
+      <p className="no-comments">
+        No comments yet.
+      </p>
+    )}
+  </div>
+                    </div>
             </div>
         </div>
     );

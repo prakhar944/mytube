@@ -23,6 +23,11 @@ function WatchVideo(){
     const [commentText, setCommentText] = useState("");
     const [commentLoading, setCommentLoading] = useState(false);
 
+    const [editingCommentId, setEditingCommentId] = useState(null);
+    const [editCommentText, setEditCommentText] = useState("");
+
+
+
 
     const fetchVideo = async () => {
         try {
@@ -75,34 +80,7 @@ function WatchVideo(){
   }
     };   
 
-    const handleSubscribe = async () => {
-      try {
-        setSubscribeLoading(true);
 
-        const token = localStorage.getItem("accessToken");
-
-        const response = await axios.post(
-          `${import.meta.env.VITE_API_URL}/subscriptions/channel/${video.owner._id}`,
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        console.log("Subscription response:", response.data);
-
-        setSubscribed((prev) => !prev);
-      } catch (error) {
-        console.error(
-          "Error toggling subscription:",
-          error.response?.data || error
-        );
-      } finally {
-        setSubscribeLoading(false);
-      }
-    };
 
     const fetchComments = async () => {
       try {
@@ -158,6 +136,92 @@ function WatchVideo(){
         setCommentLoading(false);
       }
     };
+
+    const handleEditStart = (comment) => {
+  setEditingCommentId(comment._id);
+  setEditCommentText(comment.content);
+    };
+
+    const handleUpdateComment = async (commentId) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+
+    await axios.patch(
+      `${import.meta.env.VITE_API_URL}/comments/c/${commentId}`,
+      {
+        content: editCommentText,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    setEditingCommentId(null);
+    setEditCommentText("");
+
+    await fetchComments();
+  } catch (error) {
+    console.error("Error updating comment:", error);
+  }
+    };
+
+    const handleDeleteComment = async (commentId) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+
+    await axios.delete(
+      `${import.meta.env.VITE_API_URL}/comments/c/${commentId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    await fetchComments();
+  } catch (error) {
+    console.error("Error deleting comment:", error);
+  }
+    };
+
+
+
+
+
+
+    const handleSubscribe = async () => {
+      try {
+        setSubscribeLoading(true);
+
+        const token = localStorage.getItem("accessToken");
+
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_URL}/subscriptions/channel/${video.owner._id}`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        console.log("Subscription response:", response.data);
+
+        setSubscribed((prev) => !prev);
+      } catch (error) {
+        console.error(
+          "Error toggling subscription:",
+          error.response?.data || error
+        );
+      } finally {
+        setSubscribeLoading(false);
+      }
+    };
+
+
+
 
         useEffect(() => {
       fetchVideo();
@@ -284,26 +348,76 @@ function WatchVideo(){
           <div className="comments-list">
             {comments.length > 0 ? (
               comments.map((comment) => (
-                <div
-                  className="comment-card"
-                  key={comment._id}
-                >
-                  <div className="comment-avatar">
-                    {comment.owner?.fullName
-                      ?.charAt(0)
-                      ?.toUpperCase() || "U"}
-                  </div>
-                    
-                  <div className="comment-content">
-                    <h4>
-                      {comment.owner?.fullName ||
-                        "User"}
-                    </h4>
-                      
-                    <p>{comment.content}</p>
-                  </div>
-                </div>
-      ))
+  <div
+    className="comment-card"
+    key={comment._id}
+  >
+    <div className="comment-avatar">
+      {comment.owner?.fullName
+        ?.charAt(0)
+        ?.toUpperCase() || "U"}
+    </div>
+
+    <div className="comment-content">
+      <h4>
+        {comment.owner?.fullName || "User"}
+      </h4>
+
+      {editingCommentId === comment._id ? (
+        <div className="comment-edit-area">
+          <input
+            type="text"
+            value={editCommentText}
+            onChange={(e) =>
+              setEditCommentText(e.target.value)
+            }
+          />
+
+          <div className="comment-edit-buttons">
+            <button
+              onClick={() =>
+                handleUpdateComment(comment._id)
+              }
+            >
+              Save
+            </button>
+
+            <button
+              onClick={() => {
+                setEditingCommentId(null);
+                setEditCommentText("");
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      ) : (
+        <>
+          <p>{comment.content}</p>
+
+          <div className="comment-actions">
+            <button
+              onClick={() =>
+                handleEditStart(comment)
+              }
+            >
+              Edit
+            </button>
+
+            <button
+              onClick={() =>
+                handleDeleteComment(comment._id)
+              }
+            >
+              Delete
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  </div>
+))
     ) : (
       <p className="no-comments">
         No comments yet.

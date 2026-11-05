@@ -444,11 +444,15 @@ function WatchVideo(){
           <div className="comment-actions">
 
             <button
-              className={`comment-like-button ${
-                comment.isLiked ? "liked" : ""
-              }`}
+              className={`comment-like-button ${comment.isLiked ? "liked" : ""}`}
               onClick={() => handleCommentLike(comment._id)}
             >
+              <ThumbsUp
+                size={16}
+                fill={comment.isLiked ? "currentColor" : "none"}
+                strokeWidth={2}
+              />
+            
               {comment.isLiked ? "Liked" : "Like"}
               <span>{comment.likesCount || 0}</span>
             </button>

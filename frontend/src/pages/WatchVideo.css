@@ -296,12 +296,17 @@
 .comment-like-button {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
+  color: #ffffff;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
 }
 
 .comment-like-button.liked {
   color: #3ea6ff;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .comment-like-button span {

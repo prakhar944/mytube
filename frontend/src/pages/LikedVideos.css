@@ -1,0 +1,75 @@
+.liked-videos-page {
+    width: 100%;
+    min-height: 100vh;
+    padding: 28px;
+    color: #ffffff;
+}
+
+.liked-videos-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    gap: 15px;
+}
+
+.liked-videos-header h1 {
+    font-size: 26px;
+    margin-bottom: 6px;
+}
+
+.liked-videos-header p {
+    color: #aaaaaa;
+    font-size: 14px;
+}
+
+.liked-count {
+    color: #aaaaaa;
+    font-size: 14px;
+}
+
+.liked-videos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 25px 18px;
+}
+
+.liked-message,
+.liked-empty {
+    text-align: center;
+    padding: 70px 20px;
+    color: #aaaaaa;
+}
+
+.liked-empty h2 {
+    color: #ffffff;
+    margin-bottom: 10px;
+}
+
+.liked-message.error {
+    color: #ff6b6b;
+}
+
+.liked-message button {
+    margin-top: 15px;
+    padding: 10px 20px;
+    background: #3ea6ff;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+@media (max-width: 600px) {
+    .liked-videos-page {
+        padding: 18px;
+    }
+
+    .liked-videos-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .liked-videos-header h1 {
+        font-size: 22px;
+    }
+}

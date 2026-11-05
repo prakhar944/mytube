@@ -4,19 +4,20 @@ import {ApiError} from "../utils/ApiError.js"
 import {ApiResponse} from "../utils/ApiResponse.js"
 import {asyncHandler} from "../utils/asyncHandler.js"
 
-const getVideoComments = asyncHandler( async (req, res) => {
+const getVideoComments = asyncHandler(async (req, res) => {
+    const { videoId } = req.params;
+    const { page = 1, limit = 10 } = req.query;
+    const userId = new mongoose.Types.ObjectId(req.user._id);
 
-    const {videoId} = req.params;
-    const {page = 1, limit = 10} = req.query
-
-    if(!mongoose.Types.ObjectId.isValid(videoId)){
-        throw new ApiError( 400, "Invalid videoId")
+    if (!mongoose.Types.ObjectId.isValid(videoId)) {
+        throw new ApiError(400, "Invalid videoId");
     }
 
     const comments = [
         {
-            $match: {video: new mongoose.Types.ObjectId(videoId)}
-
+            $match: {
+                video: new mongoose.Types.ObjectId(videoId)
+            }
         },
         {
             $lookup: {
@@ -30,11 +31,51 @@ const getVideoComments = asyncHandler( async (req, res) => {
             $unwind: "$owner"
         },
         {
+            $lookup: {
+                from: "likes",
+                let: { commentId: "$_id" },
+                pipeline: [
+                    {
+                        $match: {
+                            $expr: {
+                                $eq: ["$comment", "$$commentId"]
+                            }
+                        }
+                    },
+                    {
+                        $project: {
+                            likedBy: 1
+                        }
+                    }
+                ],
+                as: "likes"
+            }
+        },
+        {
+            $addFields: {
+                likesCount: { $size: "$likes" },
+                isLiked: {
+                    $in: [
+                        userId,
+                        {
+                            $map: {
+                                input: "$likes",
+                                as: "like",
+                                in: "$$like.likedBy"
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        {
             $project: {
                 content: 1,
                 video: 1,
                 createdAt: 1,
                 updatedAt: 1,
+                likesCount: 1,
+                isLiked: 1,
                 owner: {
                     _id: 1,
                     username: 1,
@@ -44,22 +85,25 @@ const getVideoComments = asyncHandler( async (req, res) => {
             }
         },
         {
-            $sort: {createdAt: -1}
+            $sort: { createdAt: -1 }
         }
     ];
 
-    const result = await Comment.aggregatePaginate(comments, {page, limit});
+    const result = await Comment.aggregatePaginate(comments, {
+        page,
+        limit
+    });
 
     return res
-    .status(200)
-    .json(
-        new ApiResponse(
-            200,
-            result,
-            "Comments fetched Successfully"
-        )
-    )
-})
+        .status(200)
+        .json(
+            new ApiResponse(
+                200,
+                result,
+                "Comments fetched Successfully"
+            )
+        );
+});
 
 const addComment = asyncHandler( async (req,res) => {
     const {videoId} = req.params

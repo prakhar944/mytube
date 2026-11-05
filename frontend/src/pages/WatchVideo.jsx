@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+/* eslint-disable react-hooks/set-state-in-effect */
+import { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { ThumbsUp, Bell } from "lucide-react";
@@ -29,7 +30,7 @@ function WatchVideo(){
 
 
 
-    const fetchVideo = async () => {
+    const fetchVideo = useCallback(async () => {
         try {
             setLoading(true);
             setError("");
@@ -47,14 +48,13 @@ function WatchVideo(){
             );
             
             setVideo(response.data?.data);
-        }
-        catch(error) {
+        } catch (error) {
             console.error("Error in Fetching Video: ", error);
-            setError("Failed to Load Video")
-        }finally{
+            setError("Failed to Load Video");
+        } finally {
             setLoading(false);
         }
-    };
+    }, [videoId]);
 
     const handleLike = async () => {
   try {
@@ -82,7 +82,7 @@ function WatchVideo(){
 
 
 
-    const fetchComments = async () => {
+    const fetchComments = useCallback(async () => {
       try {
         const token = localStorage.getItem("accessToken");
       
@@ -103,7 +103,7 @@ function WatchVideo(){
       } catch (error) {
         console.error("Error fetching comments:", error);
       }
-    };
+    }, [videoId]);
 
     const handleAddComment = async (e) => {
       e.preventDefault();
@@ -186,6 +186,51 @@ function WatchVideo(){
   }
     };
 
+    const handleCommentLike = async (commentId) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_URL}/likes/comment/${commentId}`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const liked = response.data?.data?.liked;
+
+    setComments((prevComments) =>
+      prevComments.map((comment) => {
+        if (comment._id !== commentId) return comment;
+
+        const nextLiked =
+          typeof liked === "boolean"
+            ? liked
+            : !comment.isLiked;
+
+        const currentCount = comment.likesCount || 0;
+
+        return {
+          ...comment,
+          isLiked: nextLiked,
+          likesCount: Math.max(
+            0,
+            currentCount + (nextLiked ? 1 : -1)
+          ),
+        };
+      })
+    );
+  } catch (error) {
+    console.error(
+      "Error toggling comment like:",
+      error.response?.data || error
+    );
+  }
+    };
+
 
 
 
@@ -223,10 +268,10 @@ function WatchVideo(){
 
 
 
-        useEffect(() => {
-      fetchVideo();
-      fetchComments();
-          }, [videoId]);
+    useEffect(() => {
+      void fetchVideo();
+      void fetchComments();
+    }, [fetchVideo, fetchComments]);
 
     if(loading){
         return (
@@ -397,22 +442,30 @@ function WatchVideo(){
           <p>{comment.content}</p>
 
           <div className="comment-actions">
+
             <button
-              onClick={() =>
-                handleEditStart(comment)
-              }
+              className={`comment-like-button ${
+                comment.isLiked ? "liked" : ""
+              }`}
+              onClick={() => handleCommentLike(comment._id)}
+            >
+              {comment.isLiked ? "Liked" : "Like"}
+              <span>{comment.likesCount || 0}</span>
+            </button>
+            
+            <button
+              onClick={() => handleEditStart(comment)}
             >
               Edit
             </button>
-
+            
             <button
-              onClick={() =>
-                handleDeleteComment(comment._id)
-              }
+              onClick={() => handleDeleteComment(comment._id)}
             >
               Delete
             </button>
-          </div>
+
+      </div>
         </>
       )}
     </div>

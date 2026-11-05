@@ -293,6 +293,22 @@
   margin-top: 7px;
 }
 
+.comment-like-button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.comment-like-button.liked {
+  color: #3ea6ff;
+  font-weight: 700;
+}
+
+.comment-like-button span {
+  color: #aaaaaa;
+  font-size: 12px;
+}
+
 
 .video-views {
     margin-bottom: 8px;
